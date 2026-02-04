@@ -1,10 +1,13 @@
 package biblioteca.controlador;
 
 import biblioteca.modelo.Modelo;
-import biblioteca.modelo.dominio.*;
+import biblioteca.modelo.dominio.Libro;
+import biblioteca.modelo.dominio.Prestamo;
+import biblioteca.modelo.dominio.Usuario;
 import biblioteca.vista.Vista;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Controlador {
     private Modelo modelo;
@@ -62,19 +65,19 @@ public class Controlador {
         return modelo.buscar(libro);
     }
 
-    public Usuario[] getUsuarios() {
+    public List<Usuario> getUsuarios() {
         return modelo.getUsuarios();
     }
 
-    public Libro[] getLibros() {
+    public List<Libro> getLibros() {
         return modelo.getLibros();
     }
 
-    public Prestamo[] getPrestamos() {
+    public List<Prestamo> getPrestamos() {
         return modelo.getPrestamos();
     }
 
-    public Prestamo[] getPrestamos(Usuario usuario) {
+    public List<Prestamo> getPrestamos(Usuario usuario) {
         return modelo.getPrestamos(usuario);
     }
 }

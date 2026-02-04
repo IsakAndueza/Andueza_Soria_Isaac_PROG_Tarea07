@@ -23,25 +23,27 @@ public class Usuario {
     }
 
     public void setId(String id) {
-        if (id == null || !id.matches(DNI_PATTERN))
+        if (id == null || !id.matches(DNI_PATTERN)) {
             throw new IllegalArgumentException("ERROR: El DNI debe tener 8 números y una letra mayúscula.");
+        }
         this.id = id;
     }
 
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.isBlank())
-            throw new IllegalArgumentException("ERROR: El nombre no puede estar vacío.");
-        this.nombre = nombre;
+    public void setNombre(String n) {
+        if (n == null || n.isBlank()) throw new IllegalArgumentException("ERROR: El nombre no puede estar vacío.");
+        this.nombre = n;
     }
 
-    public void setEmail(String email) {
-        if (email == null || !email.contains("@")) throw new IllegalArgumentException("ERROR: El email no es válido.");
-        this.email = email;
+    public void setEmail(String e) {
+        if (e == null || !e.contains("@")) {
+            throw new IllegalArgumentException("ERROR: El formato del email no es válido (debe contener '@').");
+        }
+        this.email = e;
     }
 
-    public void setDireccion(Direccion direccion) {
-        if (direccion == null) throw new NullPointerException("ERROR: La dirección no puede ser nula.");
-        this.direccion = direccion;
+    public void setDireccion(Direccion d) {
+        if (d == null) throw new NullPointerException("ERROR: La dirección no puede ser nula.");
+        this.direccion = d;
     }
 
     public String getId() {
@@ -66,6 +68,6 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return String.format("Usuario: %s [DNI: %s]\nEmail: %s | Dirección: %s", nombre, id, email, direccion);
+        return String.format("USUARIO -> Nombre: %s | DNI: %s | Email: %s | Dirección: %s", nombre, id, email, direccion);
     }
 }

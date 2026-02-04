@@ -1,20 +1,24 @@
 package biblioteca.modelo;
 
-import biblioteca.modelo.dominio.*;
-import biblioteca.modelo.negocio.*;
+import biblioteca.modelo.dominio.Libro;
+import biblioteca.modelo.dominio.Prestamo;
+import biblioteca.modelo.dominio.Usuario;
+import biblioteca.modelo.negocio.Libros;
+import biblioteca.modelo.negocio.Prestamos;
+import biblioteca.modelo.negocio.Usuarios;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Modelo {
-    private static final int CAPACIDAD = 50;
     private Libros almacenLibros;
     private Usuarios registroUsuarios;
     private Prestamos gestionPrestamos;
 
     public void comenzar() {
-        almacenLibros = new Libros(CAPACIDAD);
-        registroUsuarios = new Usuarios(CAPACIDAD);
-        gestionPrestamos = new Prestamos(CAPACIDAD);
+        almacenLibros = new Libros();
+        registroUsuarios = new Usuarios();
+        gestionPrestamos = new Prestamos();
     }
 
     public void terminar() {
@@ -32,18 +36,21 @@ public class Modelo {
     public void prestar(Libro libro, Usuario usuario, LocalDate fecha) {
         Libro libroReal = almacenLibros.buscar(libro);
         Usuario usuarioReal = registroUsuarios.buscar(usuario);
-
-        if (libroReal == null) throw new IllegalArgumentException("ERROR: El libro indicado no existe.");
-        if (usuarioReal == null) throw new IllegalArgumentException("ERROR: El usuario indicado no existe.");
+        if (libroReal == null) {
+            throw new IllegalArgumentException("ERROR: El libro indicado no existe.");
+        }
+        if (usuarioReal == null) {
+            throw new IllegalArgumentException("ERROR: El usuario indicado no existe.");
+        }
         gestionPrestamos.prestar(libroReal, usuarioReal, fecha);
     }
 
     public boolean devolver(Libro libro, Usuario usuario, LocalDate fecha) {
         Libro libroReal = almacenLibros.buscar(libro);
         Usuario usuarioReal = registroUsuarios.buscar(usuario);
-
-        if (libroReal == null || usuarioReal == null) return false;
-
+        if (libroReal == null || usuarioReal == null) {
+            return false;
+        }
         return gestionPrestamos.devolver(libroReal, usuarioReal, fecha);
     }
 
@@ -63,19 +70,19 @@ public class Modelo {
         return registroUsuarios.buscar(usuario);
     }
 
-    public Libro[] getLibros() {
+    public List<Libro> getLibros() {
         return almacenLibros.todos();
     }
 
-    public Usuario[] getUsuarios() {
+    public List<Usuario> getUsuarios() {
         return registroUsuarios.todos();
     }
 
-    public Prestamo[] getPrestamos() {
-        return gestionPrestamos.historial();
+    public List<Prestamo> getPrestamos() {
+        return gestionPrestamos.todos();
     }
 
-    public Prestamo[] getPrestamos(Usuario usuario) {
-        return gestionPrestamos.prestamosUsuario(usuario);
+    public List<Prestamo> getPrestamos(Usuario usuario) {
+        return gestionPrestamos.todos(usuario);
     }
 }

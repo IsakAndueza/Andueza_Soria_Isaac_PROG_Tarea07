@@ -2,45 +2,55 @@ package biblioteca.modelo.negocio;
 
 import biblioteca.modelo.dominio.Usuario;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class Usuarios {
-    private int capacidad, tamano;
-    private Usuario[] coleccionUsuarios;
+    private List<Usuario> coleccionUsuarios;
 
-    public Usuarios(int capacidad) {
-        if (capacidad <= 0) throw new IllegalArgumentException("ERROR: Capacidad positiva.");
-        this.capacidad = capacidad;
-        this.coleccionUsuarios = new Usuario[capacidad];
-        this.tamano = 0;
+    public Usuarios() {
+        coleccionUsuarios = new ArrayList<>();
     }
 
     public void alta(Usuario usuario) {
-        if (usuario == null) throw new NullPointerException("ERROR: Usuario nulo.");
-        if (tamano >= capacidad) throw new IllegalStateException("ERROR: No hay espacio.");
-        if (buscar(usuario) != null) throw new IllegalStateException("ERROR: Ya existe el usuario.");
-        coleccionUsuarios[tamano++] = new Usuario(usuario);
+        if (usuario == null) {
+            throw new NullPointerException("ERROR: No se puede dar de alta un usuario nulo.");
+        }
+        if (coleccionUsuarios.contains(usuario)) {
+            throw new IllegalStateException("ERROR: Ya existe un usuario con ese ID.");
+        }
+        coleccionUsuarios.add(new Usuario(usuario));
     }
 
     public void baja(Usuario usuario) {
-        if (usuario == null) return;
-        for (int i = 0; i < tamano; i++) {
-            if (coleccionUsuarios[i].equals(usuario)) {
-                for (int j = i; j < tamano - 1; j++) coleccionUsuarios[j] = coleccionUsuarios[j + 1];
-                coleccionUsuarios[--tamano] = null;
-                return;
-            }
+        if (usuario == null) {
+            throw new NullPointerException("ERROR: No se puede dar de baja un usuario nulo.");
         }
+        if (!coleccionUsuarios.contains(usuario)) {
+            throw new IllegalStateException("ERROR: El usuario no existe.");
+        }
+        coleccionUsuarios.remove(usuario);
     }
 
     public Usuario buscar(Usuario usuario) {
-        if (usuario == null) return null;
-        for (int i = 0; i < tamano; i++)
-            if (coleccionUsuarios[i].equals(usuario)) return new Usuario(coleccionUsuarios[i]);
+        if (usuario == null) {
+            return null;
+        }
+        int indice = coleccionUsuarios.indexOf(usuario);
+        if (indice != -1) {
+            return new Usuario(coleccionUsuarios.get(indice));
+        }
         return null;
     }
 
-    public Usuario[] todos() {
-        return Arrays.copyOf(coleccionUsuarios, tamano);
+    public List<Usuario> todos() {
+        List<Usuario> copiaSorted = new ArrayList<>();
+        for (Usuario u : coleccionUsuarios) {
+            copiaSorted.add(new Usuario(u));
+        }
+        // Ordenamos por nombre de la A a la Z
+        copiaSorted.sort(Comparator.comparing(Usuario::getNombre));
+        return copiaSorted;
     }
 }

@@ -7,12 +7,16 @@ import java.util.Objects;
 public class Prestamo {
     private Libro libro;
     private Usuario usuario;
-    private LocalDate fInicio, fLimite, fDevolucion;
+    private LocalDate fInicio;
+    private LocalDate fLimite;
+    private LocalDate fDevolucion;
     private boolean devuelto;
     private static final int DURACION = 15;
 
     public Prestamo(Libro libro, Usuario usuario, LocalDate fInicio) {
-        if (libro == null || usuario == null || fInicio == null) throw new NullPointerException("ERROR: Datos nulos.");
+        if (libro == null || usuario == null || fInicio == null) {
+            throw new NullPointerException("ERROR: Datos nulos.");
+        }
         this.libro = new Libro(libro);
         this.usuario = new Usuario(usuario);
         this.fInicio = fInicio;
@@ -30,24 +34,27 @@ public class Prestamo {
         this.devuelto = p.devuelto;
     }
 
-    public void marcarDevuelto(LocalDate fecha) {
-        if (fecha == null) throw new NullPointerException("ERROR: Fecha nula.");
-        if (fecha.isBefore(fInicio))
-            throw new IllegalArgumentException("ERROR: La fecha de devolución no puede ser anterior al inicio.");
-        this.fDevolucion = fecha;
-        this.devuelto = true;
-    }
-
-    public Libro getLibro() {
-        return libro;
+    public LocalDate getfInicio() {
+        return fInicio;
     }
 
     public Usuario getUsuario() {
         return usuario;
     }
 
+    public Libro getLibro() {
+        return libro;
+    }
+
     public boolean isDevuelto() {
         return devuelto;
+    }
+
+    public void marcarDevuelto(LocalDate fecha) {
+        if (fecha == null) throw new NullPointerException("ERROR: Fecha nula.");
+        if (fecha.isBefore(fInicio)) throw new IllegalArgumentException("ERROR: Fecha incoherente.");
+        this.fDevolucion = fecha;
+        this.devuelto = true;
     }
 
     @Override
@@ -65,8 +72,13 @@ public class Prestamo {
     @Override
     public String toString() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String estado = devuelto ? "Devuelto el " + fDevolucion.format(dtf) : "Pendiente (Límite: " + fLimite.format(dtf) + ")";
-        return String.format("PRÉSTAMO -> Usuario: %s | Libro: %s | Inicio: %s | %s",
-                usuario.getNombre(), libro.getIsbn(), fInicio.format(dtf), estado);
+        String info = String.format("PRÉSTAMO -> Libro: %s | Usuario: %s | Inicio: %s | Límite: %s",
+                libro.getTitulo(), usuario.getNombre(), fInicio.format(dtf), fLimite.format(dtf));
+        if (devuelto) {
+            info += " | Devuelto el: " + fDevolucion.format(dtf);
+        } else {
+            info += " | PENDIENTE";
+        }
+        return info;
     }
 }

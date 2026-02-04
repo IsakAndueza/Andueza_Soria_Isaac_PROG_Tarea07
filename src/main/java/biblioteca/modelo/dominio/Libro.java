@@ -1,15 +1,15 @@
 package biblioteca.modelo.dominio;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Libro {
     private static final String ISBN_PATTERN = "\\d{13}";
-    private static final int MAX_AUTORES = 3;
     private String isbn, titulo;
     private int anio, unidades;
     private Categoria categoria;
-    private Autor[] autores;
-    private int numAutores;
+    private List<Autor> autores;
 
     public Libro(String isbn, String titulo, int anio, Categoria categoria, int unidades) {
         setIsbn(isbn);
@@ -17,28 +17,64 @@ public class Libro {
         setAnio(anio);
         setCategoria(categoria);
         setUnidades(unidades);
-        this.autores = new Autor[MAX_AUTORES];
-        this.numAutores = 0;
+        this.autores = new ArrayList<>();
     }
 
-    public Libro(Libro libro) {
-        if (libro == null) throw new NullPointerException("ERROR: No se puede copiar un libro nulo.");
-        this.isbn = libro.isbn;
-        this.titulo = libro.titulo;
-        this.anio = libro.anio;
-        this.categoria = libro.categoria;
-        this.unidades = libro.unidades;
-        this.numAutores = libro.numAutores;
-        this.autores = new Autor[MAX_AUTORES];
-        for (int i = 0; i < numAutores; i++) {
-            this.autores[i] = new Autor(libro.autores[i]);
-        }
+    public Libro(Libro l) {
+        if (l == null) throw new NullPointerException("ERROR: Libro nulo.");
+        this.isbn = l.isbn;
+        this.titulo = l.titulo;
+        this.anio = l.anio;
+        this.categoria = l.categoria;
+        this.unidades = l.unidades;
+        this.autores = new ArrayList<>();
+        for (Autor a : l.autores) this.autores.add(new Autor(a));
+    }
+
+    private void setIsbn(String isbn) {
+        if (isbn == null || !isbn.matches(ISBN_PATTERN))
+            throw new IllegalArgumentException("ERROR: ISBN de 13 dígitos.");
+        this.isbn = isbn;
+    }
+
+    private void setTitulo(String t) {
+        if (t == null || t.isBlank()) throw new IllegalArgumentException("ERROR: Título vacío.");
+        this.titulo = t;
+    }
+
+    private void setAnio(int a) {
+        this.anio = a;
+    }
+
+    private void setCategoria(Categoria c) {
+        if (c == null) throw new NullPointerException("ERROR: Categoría nula.");
+        this.categoria = c;
+    }
+
+    private void setUnidades(int u) {
+        if (u < 0) throw new IllegalArgumentException("ERROR: Unidades negativas.");
+        this.unidades = u;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public int getUnidades() {
+        return unidades;
+    }
+
+    public void agregarAutor(Autor a) {
+        if (a == null) throw new NullPointerException("ERROR: Autor nulo.");
+        autores.add(new Autor(a));
     }
 
     public void tomarPrestado() {
-        if (unidades <= 0) {
-            throw new IllegalStateException("ERROR: No quedan unidades disponibles de este libro.");
-        }
+        if (unidades <= 0) throw new IllegalStateException("ERROR: Sin stock.");
         unidades--;
     }
 
@@ -46,50 +82,11 @@ public class Libro {
         unidades++;
     }
 
-    private void setIsbn(String isbn) {
-        if (isbn == null || !isbn.matches(ISBN_PATTERN))
-            throw new IllegalArgumentException("ERROR: ISBN no válido (deben ser 13 dígitos).");
-        this.isbn = isbn;
-    }
-
-    private void setTitulo(String titulo) {
-        if (titulo == null || titulo.isBlank())
-            throw new IllegalArgumentException("ERROR: El título no puede estar vacío.");
-        this.titulo = titulo;
-    }
-
-    private void setAnio(int anio) {
-        this.anio = anio;
-    }
-
-    private void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    private void setUnidades(int unidades) {
-        if (unidades < 0) throw new IllegalArgumentException("ERROR: Las unidades no pueden ser negativas.");
-        this.unidades = unidades;
-    }
-
-    public void agregarAutor(Autor autor) {
-        if (autor == null) throw new NullPointerException("ERROR: Autor nulo.");
-        if (numAutores >= MAX_AUTORES) throw new IllegalArgumentException("ERROR: Máximo 3 autores.");
-        autores[numAutores++] = new Autor(autor);
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public int getUnidades() {
-        return unidades;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Libro libro)) return false;
-        return Objects.equals(isbn, libro.isbn);
+        if (!(o instanceof Libro l)) return false;
+        return Objects.equals(isbn, l.isbn);
     }
 
     @Override
@@ -99,13 +96,7 @@ public class Libro {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("Libro -> ISBN: %s, Título: %s, Año: %d, Categoría: %s, Unidades: %d\n",
-                isbn, titulo, anio, categoria, unidades));
-        sb.append("   Autores: ");
-        for (int i = 0; i < numAutores; i++) {
-            sb.append(autores[i]).append(i == numAutores - 1 ? "" : " | ");
-        }
-        return sb.toString();
+        return String.format("LIBRO -> Título: %s | ISBN: %s | Unidades: %d | Categoría: %s | Autores: %s",
+                titulo, isbn, unidades, categoria, autores);
     }
 }
