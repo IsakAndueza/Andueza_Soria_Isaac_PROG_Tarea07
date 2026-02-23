@@ -3,7 +3,6 @@ package biblioteca.modelo.negocio;
 import biblioteca.modelo.dominio.Usuario;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Usuarios {
@@ -39,18 +38,16 @@ public class Usuarios {
         }
         int indice = coleccionUsuarios.indexOf(usuario);
         if (indice != -1) {
-            return new Usuario(coleccionUsuarios.get(indice));
+            return coleccionUsuarios.get(indice);
         }
         return null;
     }
 
     public List<Usuario> todos() {
-        List<Usuario> copiaSorted = new ArrayList<>();
+        List<Usuario> copia = new ArrayList<>();
         for (Usuario u : coleccionUsuarios) {
-            copiaSorted.add(new Usuario(u));
+            copia.add(new Usuario(u));
         }
-        // Ordenamos por nombre de la A a la Z
-        copiaSorted.sort(Comparator.comparing(Usuario::getNombre));
-        return copiaSorted;
+        return copia;
     }
 }

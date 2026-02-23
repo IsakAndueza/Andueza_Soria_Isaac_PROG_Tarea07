@@ -6,7 +6,6 @@ import biblioteca.modelo.dominio.Usuario;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Prestamos {
@@ -41,12 +40,11 @@ public class Prestamos {
     }
 
     public List<Prestamo> todos() {
-        List<Prestamo> copiaSorted = new ArrayList<>();
+        List<Prestamo> copia = new ArrayList<>();
         for (Prestamo p : coleccionPrestamos) {
-            copiaSorted.add(new Prestamo(p));
+            copia.add(new Prestamo(p));
         }
-        ordenarLista(copiaSorted);
-        return copiaSorted;
+        return copia;
     }
 
     public List<Prestamo> todos(Usuario usuario) {
@@ -59,12 +57,6 @@ public class Prestamos {
                 filtrados.add(new Prestamo(p));
             }
         }
-        ordenarLista(filtrados);
         return filtrados;
-    }
-
-    private void ordenarLista(List<Prestamo> lista) {
-        lista.sort(Comparator.comparing(Prestamo::getfInicio).reversed()
-                .thenComparing(p -> p.getUsuario().getNombre()));
     }
 }

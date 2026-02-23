@@ -3,7 +3,6 @@ package biblioteca.modelo.negocio;
 import biblioteca.modelo.dominio.Libro;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Libros {
@@ -45,12 +44,10 @@ public class Libros {
     }
 
     public List<Libro> todos() {
-        List<Libro> copiaSorted = new ArrayList<>();
+        List<Libro> copia = new ArrayList<>();
         for (Libro l : coleccionLibros) {
-            copiaSorted.add(new Libro(l));
+            copia.add(new Libro(l));
         }
-
-        copiaSorted.sort(Comparator.comparing(Libro::getTitulo));
-        return copiaSorted;
+        return copia;
     }
 }
